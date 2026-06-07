@@ -1,0 +1,9 @@
+# OS
+.DS_Store
+
+# Vercel
+.vercel
+
+# Node (only if you later add a precompile build)
+node_modules/
+npm-debug.log*

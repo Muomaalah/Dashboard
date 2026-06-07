@@ -1,0 +1,14 @@
+{
+  "name": "accra-north-commercial-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Accra North Commercial Performance Portal — static frontend + Neon-backed serverless API on Vercel",
+  "engines": { "node": "24.x" },
+  "scripts": {
+    "seed": "node scripts/seed.mjs"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4"
+  }
+}
