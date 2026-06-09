@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Accra North · Commercial Performance Portal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -842,11 +842,15 @@ textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--prima
   /* App shell → single column; sidebar becomes an off-canvas drawer */
   .app-root { grid-template-columns: 1fr; }
   .sidebar {
-    position: fixed; top: 0; left: 0; width: 264px; max-width: 84vw; height: 100vh;
+    position: fixed; top: 0; left: 0; width: 264px; max-width: 84vw;
+    height: 100vh; height: 100dvh;            /* dvh excludes mobile browser chrome */
     z-index: 60; transform: translateX(-100%);
     transition: transform 0.26s cubic-bezier(.2,.7,.2,1);
   }
   .sidebar.open { transform: translateX(0); box-shadow: 4px 0 28px oklch(15% 0.02 240 / 0.35); }
+  /* Keep Sign out clear of the browser bar / iOS home indicator + bigger tap target */
+  .sb-foot { padding: 16px 20px calc(22px + env(safe-area-inset-bottom, 0px)); }
+  .logout-btn { padding: 12px; font-size: 13px; min-height: 44px; }
   .sb-backdrop {
     display: block; position: fixed; inset: 0; z-index: 55;
     background: oklch(15% 0.02 240 / 0.5); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
