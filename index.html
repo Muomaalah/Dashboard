@@ -833,6 +833,73 @@ textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--prima
 .modal-body { padding: 20px 24px; }
 .modal-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 16px 24px; border-top: 1px solid var(--line); }
 
+/* ===========================================================
+   COLLAPSIBLE SIDEBAR + MOBILE LAYOUT
+   =========================================================== */
+.sb-toggle, .sb-close, .sb-backdrop { display: none; }
+
+@media (max-width: 768px) {
+  /* App shell → single column; sidebar becomes an off-canvas drawer */
+  .app-root { grid-template-columns: 1fr; }
+  .sidebar {
+    position: fixed; top: 0; left: 0; width: 264px; max-width: 84vw; height: 100vh;
+    z-index: 60; transform: translateX(-100%);
+    transition: transform 0.26s cubic-bezier(.2,.7,.2,1);
+  }
+  .sidebar.open { transform: translateX(0); box-shadow: 4px 0 28px oklch(15% 0.02 240 / 0.35); }
+  .sb-backdrop {
+    display: block; position: fixed; inset: 0; z-index: 55;
+    background: oklch(15% 0.02 240 / 0.5); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+    animation: ex-fade-in 0.18s ease-out;
+  }
+  .sb-toggle {
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+    width: 38px; height: 38px; border-radius: var(--r-sm); margin-right: 2px;
+    background: white; border: 1px solid var(--line); color: var(--ink-2);
+  }
+  .sb-toggle:hover { background: var(--bg-soft); }
+  .sb-close {
+    display: inline-flex; align-items: center; justify-content: center; margin-left: auto;
+    width: 30px; height: 30px; border-radius: var(--r-sm); font-size: 13px;
+    background: oklch(30% 0.02 240); border: none; color: oklch(85% 0.02 240);
+  }
+
+  /* Topbar wraps; drop redundant sub-label */
+  .topbar { padding: 10px 14px; gap: 8px; flex-wrap: wrap; }
+  .tb-left { gap: 8px; align-items: center; min-width: 0; }
+  .tb-title { font-size: 16px; }
+  .tb-sub { display: none; }
+  .tb-right { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+  /* Content breathing room */
+  .view-wrap { padding: 16px 14px 48px; }
+  .view-body { gap: 16px; }
+  .section-head { gap: 12px; }
+  .sh-title { font-size: 24px; }
+  .sh-meta { flex-wrap: wrap; }
+
+  /* Popovers + modals fit the viewport */
+  .inbox-drop { width: min(440px, calc(100vw - 24px)); }
+  .period-pop { min-width: 0; width: min(320px, calc(100vw - 24px)); }
+  .modal, .modal-lg { max-width: calc(100vw - 24px); }
+  .modal-back { padding: 12px; }
+
+  /* Login → single column, drop the marketing panel */
+  .login-root { grid-template-columns: 1fr; }
+  .login-left { display: none; }
+  .login-right { padding: 24px 16px; }
+  .login-card { padding: 28px 22px; }
+}
+
+@media (max-width: 520px) {
+  .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kpi-card { padding: 12px; }
+  .kpi-value { font-size: 18px; }
+  .sh-title { font-size: 21px; }
+  .lc-title { font-size: 30px; }
+  .filter-pill, .period-trigger { padding: 6px 10px; }
+}
+
 </style>
 </head>
 <body>

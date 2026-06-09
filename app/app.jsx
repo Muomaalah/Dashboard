@@ -42,6 +42,8 @@ function AppInner() {
 function AppShell({ fullData, myDistricts, view, setView, districtFilter, setDistrictFilter, openEntryId, setOpenEntryId, tick, setTick, currentUser, role, logout, can, ROLES }) {
   const { period } = useFilters();
   const data = aMemo(() => sliceData(fullData, period.from, period.to), [fullData, period.from, period.to]);
+  const [sidebarOpen, setSidebarOpen] = aState(false);
+  const go = (id) => { setView(id); setSidebarOpen(false); };  // navigate + close drawer on mobile
 
   let scope = myDistricts;
   if (myDistricts.length > 1 && districtFilter !== 'ALL') scope = [districtFilter];
@@ -66,19 +68,21 @@ function AppShell({ fullData, myDistricts, view, setView, districtFilter, setDis
 
   return (
     <div className="app-root">
-      <aside className="sidebar">
+      {sidebarOpen && <div className="sb-backdrop" onClick={() => setSidebarOpen(false)} />}
+      <aside className={"sidebar" + (sidebarOpen ? ' open' : '')}>
         <div className="brand">
           <svg viewBox="0 0 40 40" width="22" height="22"><path d="M20 4 C12 14, 8 20, 8 26 a12 12 0 0 0 24 0 c0-6 -4-12 -12-22z" fill="currentColor"/></svg>
           <div>
             <div className="brand-line1">Accra North</div>
             <div className="brand-line2">Commercial Portal</div>
           </div>
+          <button className="sb-close" onClick={() => setSidebarOpen(false)} aria-label="Close menu">✕</button>
         </div>
 
         <div className="sb-section">DASHBOARDS</div>
         <nav className="sb-nav">
           {navItems.filter(n => !['entry','admin','custom','daily','approvals'].includes(n.id)).map(n => (
-            <button key={n.id} className={"sb-item " + (view===n.id?'active':'')} onClick={() => setView(n.id)}>
+            <button key={n.id} className={"sb-item " + (view===n.id?'active':'')} onClick={() => go(n.id)}>
               <span className="sb-icon">{n.icon}</span>{n.label}
             </button>
           ))}
@@ -87,7 +91,7 @@ function AppShell({ fullData, myDistricts, view, setView, districtFilter, setDis
         <div className="sb-section">TOOLS</div>
         <nav className="sb-nav">
           {navItems.filter(n => ['daily','custom'].includes(n.id)).map(n => (
-            <button key={n.id} className={"sb-item " + (view===n.id?'active':'')} onClick={() => setView(n.id)}>
+            <button key={n.id} className={"sb-item " + (view===n.id?'active':'')} onClick={() => go(n.id)}>
               <span className="sb-icon">{n.icon}</span>{n.label}
             </button>
           ))}
@@ -97,7 +101,7 @@ function AppShell({ fullData, myDistricts, view, setView, districtFilter, setDis
           <div className="sb-section">OPERATIONS</div>
           <nav className="sb-nav">
             {navItems.filter(n => ['entry','approvals','admin'].includes(n.id)).map(n => (
-              <button key={n.id} className={"sb-item " + (view===n.id?'active':'')} onClick={() => setView(n.id)}>
+              <button key={n.id} className={"sb-item " + (view===n.id?'active':'')} onClick={() => go(n.id)}>
                 <span className="sb-icon">{n.icon}</span>{n.label}
               </button>
             ))}
@@ -119,6 +123,9 @@ function AppShell({ fullData, myDistricts, view, setView, districtFilter, setDis
       <main className="main">
         <header className="topbar">
           <div className="tb-left">
+            <button className="sb-toggle" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
             <h1 className="tb-title">{navItems.find(n => n.id===safeView)?.label}</h1>
             <span className="tb-sub">{currentUser.name} · {role.label}</span>
           </div>
