@@ -189,7 +189,19 @@ function exportCsv(data, districts) {
     const r = await fetch('/api/bootstrap', { headers: { 'Accept': 'application/json' } });
     if (!r.ok) throw new Error('bootstrap ' + r.status);
     const s = await r.json();
-    if (s && s.dataset) window.DASHBOARD_DATA = s.dataset;
+    if (s && s.dataset) {
+      window.DASHBOARD_DATA = s.dataset;
+    } else {
+      // First run against an empty database — seed it from the bundled dataset
+      // (server accepts 'dataset' only while the key is absent, so this is one-time).
+      fetch('/api/state', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'dataset', value: window.DASHBOARD_DATA })
+      }).then(function (sr) {
+        console.info('[dashboard] base dataset ' + (sr.ok ? 'seeded to database' : 'seed skipped (' + sr.status + ')'));
+      }).catch(function () {});
+    }
     window.__Store.setOnline(true, {
       users:         s.users || [],
       entries:       s.entries || [],
