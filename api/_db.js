@@ -9,11 +9,19 @@ const connectionString =
   process.env.DATABASE_URL_UNPOOLED ||
   process.env.POSTGRES_URL_NON_POOLING;
 
-if (!connectionString) {
-  console.error('[api] No database connection string. Set DATABASE_URL (Neon) in the Vercel project.');
+// Lazy init: neon() throws if called with no connection string, which would
+// crash the function at import time (FUNCTION_INVOCATION_FAILED). Initialising
+// on first use lets handlers return a clean JSON error instead.
+let _client = null;
+export function sql(strings, ...values) {
+  if (!_client) {
+    if (!connectionString) {
+      throw new Error('Database not configured: attach Neon to this Vercel project (Storage tab) so DATABASE_URL is set, then redeploy.');
+    }
+    _client = neon(connectionString);
+  }
+  return _client(strings, ...values);
 }
-
-export const sql = neon(connectionString);
 
 // Create the table on demand (cheap; cached per warm instance).
 let ensured = false;
